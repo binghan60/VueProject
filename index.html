@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="css/reset.css" />
+		<link rel="stylesheet" href="css/style.css" />
+		<meta name="description" content="Vue登入頁" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.5/axios.min.js" integrity="sha512-TjBzDQIDnc6pWyeM1bhMnDxtWH0QpOXMcVooglXrali/Tj7W569/wd4E8EDjk1CwOAOPSJon1VfcEt1BI4xIrA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+		<title>會員登入</title>
+	</head>
+	<body>
+		<div id="app">
+			<div id="login">
+				<form>
+					<div class="loginFormTab">
+						<div class="active">登入</div>
+						<div>註冊</div>
+					</div>
+					<div class="loginFromContainer">
+						<div class="loginForm">
+							<div>
+								<i class="fa-solid fa-user"></i>
+								<input type="text" name="username" placeholder="請輸入帳號" />
+							</div>
+							<div>
+								<i class="fa-solid fa-lock"></i>
+								<input type="password" name="password" placeholder="請輸入密碼" />
+							</div>
+							<button type="button" @click="login()">登 入</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<script type="module">
+			const url = "https://ec-course-api.hexschool.io/v2";
+			const path = "binghank";
+			import { createApp } from "https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.3/vue.esm-browser.min.js";
+			createApp({
+				data() {
+					return {};
+				},
+				methods: {
+					login() {
+						const username = document.querySelector("input[name=username]").value;
+						const password = document.querySelector("input[name=password]").value;
+						if (!username.trim()) {
+							alert("請輸入帳號");
+							return;
+						}
+						if (!username.trim()) {
+							alert("請輸入帳號");
+							return;
+						}
+						const user = {
+							username,
+							password
+						};
+						axios
+							.post(`${url}/admin/signin`, user)
+							.then((res) => {
+								if (res.data.success) {
+									location.href = "product.html";
+								}
+							})
+							.catch((err) => {
+								console.log(err);
+								alert(err.response.data.message);
+								document.querySelector("input[name=username]").value = "";
+								document.querySelector("input[name=password]").value = "";
+							});
+					}
+				},
+				mounted() {}
+			}).mount("#app");
+		</script>
+	</body>
+</html>
