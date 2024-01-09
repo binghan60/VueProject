@@ -23,7 +23,8 @@
 	width: 50%;
 }
 .loginFormTab .active {
-	background-color: #919192;
+	background-color: #44c8ba;
+	font-weight: 900;
 }
 
 .loginFromContainer {
@@ -53,7 +54,7 @@
 	text-indent: 25px;
 	transition: 0.3s;
 }
-.loginForm input[type="text" i] {
+.loginForm input {
 	padding-block: 0px;
 	padding-inline: 0px;
 }
@@ -80,7 +81,7 @@
 	border: none;
 	box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.75);
 	transition: 0.5s;
-	/* font-size: 1.25rem; */
+	font-weight: 900;
 }
 
 @media only screen and (min-width: 768px) {
