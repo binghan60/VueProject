@@ -7,8 +7,10 @@
 	align-items: center;
 }
 #login Form {
+	height: 80%;
+	max-height: 500px;
+	min-height: 350px;
 	width: 300px;
-	height: 450px;
 	background-color: rgba(78, 78, 78, 0.9);
 	transition: 0.5s;
 }
@@ -87,7 +89,8 @@
 @media only screen and (min-width: 768px) {
 	#login Form {
 		width: 450px;
-		height: 675px;
+		max-height: 675px;
+		min-height: 450px;
 	}
 	.loginFormTab div {
 		line-height: 50px;
