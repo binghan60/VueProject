@@ -75,7 +75,6 @@
 						axios
 							.post(`${url}/admin/signin`, user)
 							.then((res) => {
-								console.log(res);
 								const { success, token, expired } = res.data;
 								if (success) {
 									document.cookie = `hexVueToken=${token}; expires=${new Date(expired)}`;
