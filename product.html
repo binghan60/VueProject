@@ -14,30 +14,57 @@
 			<div class="container">
 				<div class="productList">
 					<h2>產品列表</h2>
-					<p>共有10項產品</p>
-					<table>
-						<thead>
-							<tr>
-								<th>產品名稱</th>
-								<th>原價</th>
-								<th>特價</th>
-								<th>已上架</th>
-								<th>查看細節</th>
-							</tr>
-						</thead>
-
-						<tbody>
-							<tr v-for="product in products">
-								<td style="text-align: left">{{ product.title }}</td>
-								<td>{{ product.origin_price }}</td>
-								<td>{{ product.price }}</td>
-								<td><span v-if="product.is_enabled" style="color: green">是</span><span v-else style="color: rgb(235, 0, 0)">否</span></td>
-								<td><button @click="currentProduct = product">查看細節</button></td>
-							</tr>
-						</tbody>
-					</table>
+					<div class="tbl-header">
+						<table cellpadding="0" cellspacing="0" border="0">
+							<thead>
+								<tr>
+									<th>產品名稱</th>
+									<th>原價</th>
+									<th>售價</th>
+									<th>是否啟用</th>
+									<th>查看細節</th>
+								</tr>
+							</thead>
+						</table>
+					</div>
+					<div class="tbl-content">
+						<table cellpadding="0" cellspacing="0" border="0">
+							<tbody>
+								<tr v-for="product in products">
+									<td>{{ product.title }}</td>
+									<td style="text-align: center">{{ product.origin_price }}</td>
+									<td style="text-align: center">{{ product.price }}</td>
+									<td style="text-align: center"><span v-if="product.is_enabled" style="color: green; font-weight: 900">是</span><span v-else style="color: rgb(235, 0, 0); font-weight: 900">否</span></td>
+									<td style="text-align: center"><button @click="currentProduct = product">查看細節</button></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 				</div>
-				<div class="productPreview">展示區 {{ currentProduct }}</div>
+				<div class="productPreview">
+					<template v-if="currentProduct.title">
+						<div class="card">
+							<div class="card-header">
+								<img :src="currentProduct.imageUrl" alt="rover" />
+							</div>
+							<div class="card-body">
+								<span class="tag tag-teal">{{ currentProduct.category }}</span>
+								<h4>{{ currentProduct.title }}</h4>
+								<p>{{ currentProduct.description }}</p>
+								<div class="price">
+									<div class="price-info">
+										<del>原價{{ currentProduct.origin_price }}元 / {{ currentProduct.unit }}</del>
+										<br />
+										特價<span>{{ currentProduct.price }}</span>元 / {{ currentProduct.unit }}
+									</div>
+								</div>
+							</div>
+						</div>
+						<template v-for="(imgSrc,index) in currentProduct.imagesUrl" :key="index">
+							<img style="width: 110px; height: 100px; object-fit: cover" v-bind:src="imgSrc" :alt="currentProduct.title" class="images m-2" />
+						</template>
+					</template>
+				</div>
 			</div>
 		</div>
 		<div id="loading">
@@ -71,8 +98,6 @@
 							}
 						})
 						.then((res) => {
-							console.log(res);
-							document.querySelector("#loading").style.display = "none";
 							return axios(`https://ec-course-api.hexschool.io/v2/api/binghank/admin/products/all`, {
 								headers: {
 									Authorization: token
@@ -81,8 +106,8 @@
 						})
 						.then((response) => {
 							const { products } = response.data;
-							console.log(products);
 							this.products = products;
+							document.querySelector("#loading").style.display = "none";
 						})
 						.catch((err) => {
 							console.log(err);
