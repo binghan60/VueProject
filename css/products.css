@@ -25,9 +25,22 @@ body {
 	margin-bottom: 15px;
 }
 
+.productList button {
+	border: none;
+	border-radius: 5px;
+}
+
+.productList button:hover {
+	background-color: #dddddd;
+}
+
 .productList table {
 	width: 100%;
 	table-layout: fixed;
+}
+
+.productList tr:hover {
+	background-color: rgb(48, 219, 148);
 }
 
 .productList .tbl-header {
@@ -75,6 +88,11 @@ body {
 .productPreview {
 	width: 100%;
 	text-align: center;
+}
+.productPreview .title {
+	color: #fff;
+	font-size: 20px;
+	margin: 20px 0;
 }
 
 .productPreview .card {
