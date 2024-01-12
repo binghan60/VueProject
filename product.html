@@ -48,7 +48,8 @@
 								<img :src="currentProduct.imageUrl" alt="rover" />
 							</div>
 							<div class="card-body">
-								<span class="tag tag-teal">{{ currentProduct.category }}</span>
+								<span v-if="currentProduct.category == '蛋糕'" class="tag tag-purple">{{ currentProduct.category }}</span>
+								<span v-else-if="currentProduct.category == '甜甜圈'" class="tag tag-pink">{{ currentProduct.category }}</span>
 								<h4>{{ currentProduct.title }}</h4>
 								<p>{{ currentProduct.description }}</p>
 								<div class="price">
