@@ -15,7 +15,7 @@
 			<div id="login">
 				<form>
 					<div class="loginFormTab">
-						<div @click="FormStatus=true" :class="{ 'active': FormStatus }">登 入</div>
+						<div @click="FormStatus=true" :class="{ 'active': FormStatus }">測試登 入</div>
 						<div @click="FormStatus=false" :class="{ 'active': !FormStatus }">註 冊</div>
 					</div>
 					<div class="loginFromContainer">
@@ -53,6 +53,7 @@
 					};
 				},
 				methods: {
+					async login2() {},
 					login() {
 						const { username, password } = this;
 						if (!username.trim()) {
