@@ -30,42 +30,45 @@
 					<div class="tbl-content">
 						<table cellpadding="0" cellspacing="0" border="0">
 							<tbody>
-								<tr v-for="product in products">
+								<tr v-for="product in products" @click="currentProduct = product">
 									<td>{{ product.title }}</td>
 									<td style="text-align: center">{{ product.origin_price }}</td>
 									<td style="text-align: center">{{ product.price }}</td>
 									<td style="text-align: center"><span v-if="product.is_enabled" style="color: green; font-weight: 900">是</span><span v-else style="color: rgb(235, 0, 0); font-weight: 900">否</span></td>
-									<td style="text-align: center"><button @click="currentProduct = product">查看細節</button></td>
+									<td style="text-align: center"><button type="button" class="edit" @click="edit(product.id)">編輯</button><button type="button" class="delete(product.id)">刪除</button></td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
 				</div>
-				<div class="productPreview">
-					<template v-if="currentProduct.title">
-						<div class="card">
-							<div class="card-header">
-								<img :src="currentProduct.imageUrl" alt="rover" />
-							</div>
-							<div class="card-body">
-								<span v-if="currentProduct.category == '蛋糕'" class="tag tag-purple">{{ currentProduct.category }}</span>
-								<span v-else-if="currentProduct.category == '甜甜圈'" class="tag tag-pink">{{ currentProduct.category }}</span>
-								<h4>{{ currentProduct.title }}</h4>
-								<p>{{ currentProduct.description }}</p>
-								<div class="price">
-									<div class="price-info">
-										<del>原價{{ currentProduct.origin_price }}元 / {{ currentProduct.unit }}</del>
-										<br />
-										特價<span>{{ currentProduct.price }}</span>元 / {{ currentProduct.unit }}
-									</div>
+
+				<div class="modal" @click="toggleModal()" :style="{display:showModal?'flex':''}">
+					<div class="card">
+						<div class="card-header">
+							<img :src="currentProduct.imageUrl" alt="mainImg" />
+						</div>
+						<div class="card-body">
+							<span v-if="currentProduct.category == '蛋糕'" class="tag tag-purple">{{ currentProduct.category }}</span>
+							<span v-else-if="currentProduct.category == '甜甜圈'" class="tag tag-pink">{{ currentProduct.category }}</span>
+							<h4>{{ currentProduct.title }}</h4>
+							<p>{{ currentProduct.description }}</p>
+							<div class="price">
+								<div class="price-info">
+									<del>原價{{ currentProduct.origin_price }}元 / {{ currentProduct.unit }}</del>
+									<br />
+									特價<span>{{ currentProduct.price }}</span>元 / {{ currentProduct.unit }}
 								</div>
 							</div>
 						</div>
-						<template v-for="(imgSrc,index) in currentProduct.imagesUrl" :key="index">
-							<img style="width: 110px; height: 100px; object-fit: cover" v-bind:src="imgSrc" :alt="currentProduct.title" class="images m-2" />
-						</template>
-					</template>
-					<p class="title" v-else class="text-secondary">請選擇一個商品查看</p>
+						<div class="btnContainer">
+							<div>
+								<button type="button" class="cancel">取消</button>
+							</div>
+							<div>
+								<button type="button" class="confirm">送出</button>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -82,10 +85,22 @@
 				data() {
 					return {
 						products: [],
-						currentProduct: ""
+						currentProduct: "",
+						showModal: false
 					};
 				},
-				methods: {},
+				methods: {
+					edit(id) {
+						document.querySelector(".modal").style.display = "flex";
+						console.log(this.products[id]);
+						this.toggleModal();
+					},
+					delete(id) {},
+					toggleModal() {
+						this.showModal = !this.showModal;
+						console.log("AA");
+					}
+				},
 				mounted() {
 					const token = document.cookie.replace(/(?:(?:^|.*;\s*)hexVueToken\s*\=\s*([^;]*).*$)|^.*$/, "$1");
 					if (!token) {
