@@ -42,7 +42,7 @@
 					</div>
 				</div>
 
-				<div class="modal" @click="toggleModal()" :style="{display:showModal?'flex':''}">
+				<div class="modal" :style="{display:showModal?'flex':''}">
 					<div class="card">
 						<div class="card-header">
 							<img :src="currentProduct.imageUrl" alt="mainImg" />
@@ -62,7 +62,7 @@
 						</div>
 						<div class="btnContainer">
 							<div>
-								<button type="button" class="cancel">取消</button>
+								<button type="button" class="cancel" @click="toggleModal()">取消</button>
 							</div>
 							<div>
 								<button type="button" class="confirm">送出</button>
