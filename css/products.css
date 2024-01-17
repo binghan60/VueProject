@@ -221,11 +221,15 @@ body {
 	display: flex;
 	flex-direction: column;
 	justify-content: space-around;
-	align-items: flex-start;
 	padding: 20px;
 	min-height: 250px;
 	height: 100%;
 }
+.modal .card-body p,
+.modal .card-body input {
+	font-size: 14px;
+}
+
 .modal .btnContainer {
 	min-height: 45px;
 	width: 100%;
@@ -262,6 +266,13 @@ body {
 		width: 100%;
 		height: 300px;
 		object-fit: cover;
+	}
+	.modal .card-body {
+		padding: 30px;
+	}
+	.modal .card-body p,
+	.modal .card-body input {
+		font-size: 20px;
 	}
 }
 

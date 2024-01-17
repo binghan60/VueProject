@@ -30,12 +30,12 @@
 					<div class="tbl-content">
 						<table cellpadding="0" cellspacing="0" border="0">
 							<tbody>
-								<tr v-for="product in products" @click="currentProduct = product">
+								<tr v-for="product in products">
 									<td>{{ product.title }}</td>
 									<td style="text-align: center">{{ product.origin_price }}</td>
 									<td style="text-align: center">{{ product.price }}</td>
-									<td style="text-align: center"><span v-if="product.is_enabled" style="color: green; font-weight: 900">是</span><span v-else style="color: rgb(235, 0, 0); font-weight: 900">否</span></td>
-									<td style="text-align: center"><button type="button" class="edit" @click="edit(product.id)">編輯</button><button type="button" class="delete(product.id)">刪除</button></td>
+									<td style="text-align: center"><span v-if="product.is_enabled == 1" style="color: green; font-weight: 900">是</span><span v-else style="color: rgb(235, 0, 0); font-weight: 900">否</span></td>
+									<td style="text-align: center"><button type="button" class="edit" @click="openModal(product.id)">編輯</button><button type="button" class="delete" @click="delete(product.id)">刪除</button></td>
 								</tr>
 							</tbody>
 						</table>
@@ -48,16 +48,16 @@
 							<img :src="currentProduct.imageUrl" alt="mainImg" />
 						</div>
 						<div class="card-body">
-							<span v-if="currentProduct.category == '蛋糕'" class="tag tag-purple">{{ currentProduct.category }}</span>
-							<span v-else-if="currentProduct.category == '甜甜圈'" class="tag tag-pink">{{ currentProduct.category }}</span>
-							<h4>{{ currentProduct.title }}</h4>
-							<p>{{ currentProduct.description }}</p>
-							<div class="price">
-								<div class="price-info">
-									<del>原價{{ currentProduct.origin_price }}元 / {{ currentProduct.unit }}</del>
-									<br />
-									特價<span>{{ currentProduct.price }}</span>元 / {{ currentProduct.unit }}
-								</div>
+							<p>產品名稱</p>
+							<input type="text" v-model="currentProduct.title" />
+							<p>原價</p>
+							<input type="number" v-model.number="currentProduct.origin_price" />
+							<p>售價</p>
+							<input type="number" v-model.number="currentProduct.price" />
+							<p>是否啟用</p>
+							<div style="display: flex">
+								<div><input type="radio" v-model="currentProduct.is_enabled" value="1" /><label for="">啟用</label></div>
+								<div><input type="radio" v-model="currentProduct.is_enabled" value="0" /><label for="">禁用</label></div>
 							</div>
 						</div>
 						<div class="btnContainer">
@@ -65,7 +65,7 @@
 								<button type="button" class="cancel" @click="toggleModal()">取消</button>
 							</div>
 							<div>
-								<button type="button" class="confirm">送出</button>
+								<button type="button" class="confirm" @click="edit(currentProduct.id)">送出</button>
 							</div>
 						</div>
 					</div>
@@ -90,50 +90,53 @@
 					};
 				},
 				methods: {
-					edit(id) {
+					getProductAll() {
+						axios
+							.post(`${url}/api/user/check`, null)
+							.then((res) => {
+								return axios(`${url}/api/${path}/admin/products/all`);
+							})
+							.then((response) => {
+								const { products } = response.data;
+								this.products = products;
+								document.querySelector("#loading").style.display = "none";
+							})
+							.catch((err) => {
+								console.log(err);
+								const { success } = err.response.data;
+								if (!success) {
+									alert("請先登入");
+									document.querySelector("#loading").style.display = "none";
+									location.href = "index.html";
+								}
+							});
+					},
+					openModal(id) {
+						this.currentProduct = { ...this.products[id] };
 						document.querySelector(".modal").style.display = "flex";
-						console.log(this.products[id]);
 						this.toggleModal();
 					},
-					delete(id) {},
+					edit() {
+						const { currentProduct } = this;
+						axios.put(`${url}/api/${path}/admin/product/${currentProduct.id}`, { data: currentProduct }).then((res) => {
+							console.log(res.data);
+						});
+						this.getProductAll();
+						this.toggleModal();
+					},
+					delete() {},
 					toggleModal() {
 						this.showModal = !this.showModal;
-						console.log("AA");
 					}
 				},
 				mounted() {
 					const token = document.cookie.replace(/(?:(?:^|.*;\s*)hexVueToken\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+					axios.defaults.headers.common.Authorization = token;
 					if (!token) {
 						alert("請先登入");
 						location.href = "index.html";
 					}
-					axios
-						.post(`${url}/api/user/check`, null, {
-							headers: {
-								Authorization: token
-							}
-						})
-						.then((res) => {
-							return axios(`https://ec-course-api.hexschool.io/v2/api/binghank/admin/products/all`, {
-								headers: {
-									Authorization: token
-								}
-							});
-						})
-						.then((response) => {
-							const { products } = response.data;
-							this.products = products;
-							document.querySelector("#loading").style.display = "none";
-						})
-						.catch((err) => {
-							console.log(err);
-							const { success } = err.response.data;
-							if (!success) {
-								alert("請先登入");
-								document.querySelector("#loading").style.display = "none";
-								location.href = "index.html";
-							}
-						});
+					this.getProductAll();
 				}
 			}).mount("#app");
 		</script>
