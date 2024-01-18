@@ -13,7 +13,10 @@
 		<div id="app">
 			<div class="container">
 				<div class="productList">
-					<h2>產品列表</h2>
+					<div class="header">
+						<h2>產品列表</h2>
+						<button type="button" @click="toggleModal();">新增產品</button>
+					</div>
 					<div class="tbl-header">
 						<table cellpadding="0" cellspacing="0" border="0">
 							<thead>
@@ -34,8 +37,8 @@
 									<td>{{ product.title }}</td>
 									<td style="text-align: center">{{ product.origin_price }}</td>
 									<td style="text-align: center">{{ product.price }}</td>
-									<td style="text-align: center"><span v-if="product.is_enabled == 1" style="color: green; font-weight: 900">是</span><span v-else style="color: rgb(235, 0, 0); font-weight: 900">否</span></td>
-									<td style="text-align: center"><button type="button" class="edit" @click="openModal(product.id)">編輯</button><button type="button" class="delete" @click="delete(product.id)">刪除</button></td>
+									<td style="text-align: center"><span v-if="product.is_enabled == 1" style="color: rgb(13, 228, 13); font-weight: 900">是</span><span v-else style="color: rgb(235, 0, 0); font-weight: 900">否</span></td>
+									<td style="text-align: center"><button type="button" class="edit" @click="openModal(product.id)">編輯</button><button type="button" class="delete" @click="deleteProduct(product.id)">刪除</button></td>
 								</tr>
 							</tbody>
 						</table>
@@ -56,8 +59,8 @@
 							<input type="number" v-model.number="currentProduct.price" />
 							<p>是否啟用</p>
 							<div style="display: flex">
-								<div><input type="radio" v-model="currentProduct.is_enabled" value="1" /><label for="">啟用</label></div>
-								<div><input type="radio" v-model="currentProduct.is_enabled" value="0" /><label for="">禁用</label></div>
+								<div><input id="active-T" type="radio" v-model="currentProduct.is_enabled" value="1" /><label for="active-T">啟用</label></div>
+								<div><input id="active-F" type="radio" v-model="currentProduct.is_enabled" value="0" /><label for="active-F">禁用</label></div>
 							</div>
 						</div>
 						<div class="btnContainer">
@@ -65,7 +68,7 @@
 								<button type="button" class="cancel" @click="toggleModal()">取消</button>
 							</div>
 							<div>
-								<button type="button" class="confirm" @click="edit(currentProduct.id)">送出</button>
+								<button type="button" class="confirm" @click="editProduct(currentProduct.id)">送出</button>
 							</div>
 						</div>
 					</div>
@@ -90,7 +93,7 @@
 					};
 				},
 				methods: {
-					getProductAll() {
+					getAllProduct() {
 						axios
 							.post(`${url}/api/user/check`, null)
 							.then((res) => {
@@ -116,15 +119,24 @@
 						document.querySelector(".modal").style.display = "flex";
 						this.toggleModal();
 					},
-					edit() {
+					editProduct() {
+						document.querySelector("#loading").style.display = "block";
 						const { currentProduct } = this;
 						axios.put(`${url}/api/${path}/admin/product/${currentProduct.id}`, { data: currentProduct }).then((res) => {
 							console.log(res.data);
+							this.getAllProduct();
+							this.toggleModal();
 						});
-						this.getProductAll();
-						this.toggleModal();
 					},
-					delete() {},
+					deleteProduct(id) {
+						if (confirm(`確認刪除${this.products[id].title}`)) {
+							document.querySelector("#loading").style.display = "block";
+							axios.delete(`${url}/api/${path}/admin/product/${id}`).then((res) => {
+								console.log(res.data);
+								this.getAllProduct();
+							});
+						}
+					},
 					toggleModal() {
 						this.showModal = !this.showModal;
 					}
@@ -136,7 +148,7 @@
 						alert("請先登入");
 						location.href = "index.html";
 					}
-					this.getProductAll();
+					this.getAllProduct();
 				}
 			}).mount("#app");
 		</script>
