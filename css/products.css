@@ -335,7 +335,9 @@ body {
 		line-height: 1;
 		height: 20px;
 	}
-
+	.modal {
+		font-size: 14px;
+	}
 	.modal .card-header img {
 		width: 100%;
 		height: 300px;
