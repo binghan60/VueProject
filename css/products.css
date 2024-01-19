@@ -210,7 +210,7 @@ body {
 }
 
 .modal .card {
-	background-color: #fff;
+	background-color: rgba(78, 78, 78, 0.9);
 	border-radius: 10px;
 	box-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
 	overflow: hidden;
@@ -229,16 +229,78 @@ body {
 }
 
 .modal .card-body {
+	color: #fff;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-around;
-	padding: 20px;
+	padding: 10px;
 	min-height: 250px;
 	height: 100%;
 }
-.modal .card-body p,
-.modal .card-body input {
-	font-size: 14px;
+
+.modal .card-body .title input,
+.modal .card-body .description textarea {
+	margin-top: 5px;
+}
+.modal .card-body .price input {
+	margin-left: 5px;
+}
+
+.modal .card-body .title input,
+.modal .card-body .description textarea,
+.modal .card-body .price input,
+.modal .card-body textarea {
+	color: #fff;
+	font-size: 16px;
+	height: 24px;
+	width: 100%;
+	background-color: #656565;
+	border: none;
+	box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.75);
+	transition: 0.3s;
+}
+.modal .card-body .title input:focus,
+.modal .card-body .textarea input:focus,
+.modal .card-body .price input:focus,
+.modal .card-body textarea:focus {
+	outline: 1px solid #44c8ba;
+}
+
+.modal .card-body .price {
+	display: flex;
+	align-items: center;
+}
+.modal .card-body .price label {
+	white-space: nowrap;
+}
+.modal .card-body .enable > div,
+.modal .card-body .category > div {
+	padding-top: 7px;
+	display: flex;
+	justify-content: space-around;
+}
+.modal .card-body .enable input,
+.modal .card-body .category input {
+	display: none;
+}
+
+.modal .card-body .enable button,
+.modal .card-body .category button {
+	color: #fff;
+	background-color: transparent;
+	border: 1px #44c8ba solid;
+	padding: 5px 10px;
+	font-size: 16px;
+}
+
+.modal .card-body .enable button:hover,
+.modal .card-body .category button:hover {
+	background-color: #44c8ba;
+}
+
+.modal .card-body .enable button.active,
+.modal .card-body .category button.active {
+	background-color: #44c8ba;
 }
 
 .modal .btnContainer {

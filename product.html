@@ -15,7 +15,7 @@
 				<div class="productList">
 					<div class="header">
 						<h2>產品列表</h2>
-						<button type="button" @click="toggleModal();">新增產品</button>
+						<button type="button" @click="openModal('','create');">新增產品</button>
 					</div>
 					<div class="tbl-header">
 						<table cellpadding="0" cellspacing="0" border="0">
@@ -38,7 +38,7 @@
 									<td style="text-align: center">{{ product.origin_price }}</td>
 									<td style="text-align: center">{{ product.price }}</td>
 									<td style="text-align: center"><span v-if="product.is_enabled == 1" style="color: rgb(13, 228, 13); font-weight: 900">是</span><span v-else style="color: rgb(235, 0, 0); font-weight: 900">否</span></td>
-									<td style="text-align: center"><button type="button" class="edit" @click="openModal(product.id)">編輯</button><button type="button" class="delete" @click="deleteProduct(product.id)">刪除</button></td>
+									<td style="text-align: center"><button type="button" class="edit" @click="openModal(product.id,'edit')">編輯</button><button type="button" class="delete" @click="deleteProduct(product.id)">刪除</button></td>
 								</tr>
 							</tbody>
 						</table>
@@ -48,19 +48,53 @@
 				<div class="modal" :style="{display:showModal?'flex':''}">
 					<div class="card">
 						<div class="card-header">
-							<img :src="currentProduct.imageUrl" alt="mainImg" />
+							<img :src="currentProduct.imageUrl ? currentProduct.imageUrl : '/images/628711.png'" alt="mainImg" />
 						</div>
 						<div class="card-body">
-							<p>產品名稱</p>
-							<input type="text" v-model="currentProduct.title" />
-							<p>原價</p>
-							<input type="number" v-model.number="currentProduct.origin_price" />
-							<p>售價</p>
-							<input type="number" v-model.number="currentProduct.price" />
-							<p>是否啟用</p>
-							<div style="display: flex">
-								<div><input id="active-T" type="radio" v-model="currentProduct.is_enabled" value="1" /><label for="active-T">啟用</label></div>
-								<div><input id="active-F" type="radio" v-model="currentProduct.is_enabled" value="0" /><label for="active-F">禁用</label></div>
+							<div class="title">
+								<label for="modal-title">產品標題</label>
+								<input id="modal-title" type="text" v-model="currentProduct.title" />
+							</div>
+							<div class="description">
+								<label for="modal-textarea">產品描述</label>
+								<textarea id="modal-textarea" cols="1" rows="2" v-model="currentProduct.description"></textarea>
+							</div>
+							<div class="price">
+								<label for="modal-price1">原價</label>
+								<input id="modal-price1" type="number" v-model.number="currentProduct.origin_price" />
+								<label style="padding-left: 4px" for="modal-price2">特價</label>
+								<input id="modal-price1" type="number" v-model.number="currentProduct.price" />
+							</div>
+							<div class="price">
+								<label for="modal-unit">單位</label>
+								<input id="modal-unit" type="text" v-model="currentProduct.unit" />
+								<label style="padding-left: 4px" for="modal-note">備註</label>
+								<input id="modal-note" type="text" v-model="currentProduct.content" />
+							</div>
+							<div class="enable">
+								<label>是否啟用</label>
+								<div>
+									<div>
+										<input id="modal-enable1" name="modal-enable" type="radio" v-model="currentProduct.is_enabled" value="1" /><button type="button" :class="currentProduct.is_enabled == 1 ? 'active' : ''"><label for="modal-enable1">啟用</label></button>
+									</div>
+									<div>
+										<input id="modal-enable2" name="modal-enable" type="radio" v-model="currentProduct.is_enabled" value="0" /><button type="button" :class="currentProduct.is_enabled == 0 ? 'active' : ''"><label for="modal-enable2">禁用</label></button>
+									</div>
+								</div>
+							</div>
+							<div class="category">
+								<label>產品類別</label>
+								<div>
+									<div>
+										<input id="modal-category1" name="modal-category" type="radio" v-model="currentProduct.category" value="麵包" /><button type="button" :class="currentProduct.category == '麵包'? 'active':''"><label for="modal-category1">麵包</label></button>
+									</div>
+									<div>
+										<input id="modal-category2" name="modal-category" type="radio" v-model="currentProduct.category" value="蛋糕" /><button type="button" :class="currentProduct.category == '蛋糕'? 'active':''"><label for="modal-category2">蛋糕</label></button>
+									</div>
+									<div>
+										<input id="modal-category3" name="modal-category" type="radio" v-model="currentProduct.category" value="甜甜圈" /><button type="button" :class="currentProduct.category == '甜甜圈'? 'active':''"><label for="modal-category3">甜甜圈</label></button>
+									</div>
+								</div>
 							</div>
 						</div>
 						<div class="btnContainer">
@@ -68,7 +102,8 @@
 								<button type="button" class="cancel" @click="toggleModal()">取消</button>
 							</div>
 							<div>
-								<button type="button" class="confirm" @click="editProduct(currentProduct.id)">送出</button>
+								<button v-if="modalStatus =='edit'" type="button" class="confirm" @click="editProduct(currentProduct.id)">編輯</button>
+								<button v-else="modalStatus == 'create'" type="button" class="confirm" @click="createProduct()">新增產品</button>
 							</div>
 						</div>
 					</div>
@@ -88,8 +123,9 @@
 				data() {
 					return {
 						products: [],
-						currentProduct: "",
-						showModal: false
+						currentProduct: {},
+						showModal: false,
+						modalStatus: ""
 					};
 				},
 				methods: {
@@ -114,10 +150,25 @@
 								}
 							});
 					},
-					openModal(id) {
-						this.currentProduct = { ...this.products[id] };
-						document.querySelector(".modal").style.display = "flex";
+					openModal(id = "", type) {
+						if (type == "create") {
+							this.currentProduct = {};
+							this.modalStatus = "create";
+						} else if ((type = "edit")) {
+							this.currentProduct = { ...this.products[id] };
+							this.modalStatus = "edit";
+						}
 						this.toggleModal();
+					},
+					createProduct() {
+						document.querySelector("#loading").style.display = "block";
+						const { currentProduct } = this;
+						axios.post(`${url}/api/${path}/admin/product`, { data: currentProduct }).then((res) => {
+							document.querySelector("#loading").style.display = "none";
+							this.showModal = "false";
+							getAllProduct();
+							console.log(res);
+						});
 					},
 					editProduct() {
 						document.querySelector("#loading").style.display = "block";
