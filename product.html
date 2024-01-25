@@ -166,7 +166,6 @@
 						axios
 							.post(`${url}/api/${path}/admin/product`, { data: currentProduct })
 							.then((res) => {
-								document.querySelector("#loading").style.display = "none";
 								this.getAllProduct();
 							})
 							.catch((err) => alert("新增失敗"));
