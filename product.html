@@ -45,7 +45,7 @@
 					</div>
 				</div>
 
-				<div class="modal" :style="{display:showModal?'flex':''}">
+				<div class="modal" :style="{ display:showModal ? 'flex' : '' }">
 					<div class="card">
 						<div class="card-header">
 							<img :src="currentProduct.imageUrl ? currentProduct.imageUrl : 'images/628711.png'" alt="mainImg" />
@@ -99,7 +99,7 @@
 						</div>
 						<div class="btnContainer">
 							<div>
-								<button type="button" class="cancel" @click="toggleModal()">取消</button>
+								<button type="button" class="cancel" @click="this.showModal = false">取消</button>
 							</div>
 							<div>
 								<button v-if="modalStatus =='edit'" type="button" class="confirm" @click="editProduct(currentProduct.id)">編輯</button>
@@ -138,10 +138,10 @@
 							.then((response) => {
 								const { products } = response.data;
 								this.products = products;
+								this.showModal = false;
 								document.querySelector("#loading").style.display = "none";
 							})
 							.catch((err) => {
-								console.log(err);
 								const { success } = err.response.data;
 								if (!success) {
 									alert("請先登入");
@@ -158,38 +158,30 @@
 							this.currentProduct = { ...this.products[id] };
 							this.modalStatus = "edit";
 						}
-						this.toggleModal();
+						this.showModal = true;
 					},
 					createProduct() {
 						document.querySelector("#loading").style.display = "block";
 						const { currentProduct } = this;
 						axios.post(`${url}/api/${path}/admin/product`, { data: currentProduct }).then((res) => {
 							document.querySelector("#loading").style.display = "none";
-							this.showModal = "false";
-							getAllProduct();
-							console.log(res);
+							this.getAllProduct();
 						});
 					},
 					editProduct() {
 						document.querySelector("#loading").style.display = "block";
 						const { currentProduct } = this;
 						axios.put(`${url}/api/${path}/admin/product/${currentProduct.id}`, { data: currentProduct }).then((res) => {
-							console.log(res.data);
 							this.getAllProduct();
-							this.toggleModal();
 						});
 					},
 					deleteProduct(id) {
 						if (confirm(`確認刪除${this.products[id].title}`)) {
 							document.querySelector("#loading").style.display = "block";
 							axios.delete(`${url}/api/${path}/admin/product/${id}`).then((res) => {
-								console.log(res.data);
 								this.getAllProduct();
 							});
 						}
-					},
-					toggleModal() {
-						this.showModal = !this.showModal;
 					}
 				},
 				mounted() {
