@@ -163,24 +163,33 @@
 					createProduct() {
 						document.querySelector("#loading").style.display = "block";
 						const { currentProduct } = this;
-						axios.post(`${url}/api/${path}/admin/product`, { data: currentProduct }).then((res) => {
-							document.querySelector("#loading").style.display = "none";
-							this.getAllProduct();
-						});
+						axios
+							.post(`${url}/api/${path}/admin/product`, { data: currentProduct })
+							.then((res) => {
+								document.querySelector("#loading").style.display = "none";
+								this.getAllProduct();
+							})
+							.catch((err) => alert("新增失敗"));
 					},
 					editProduct() {
 						document.querySelector("#loading").style.display = "block";
 						const { currentProduct } = this;
-						axios.put(`${url}/api/${path}/admin/product/${currentProduct.id}`, { data: currentProduct }).then((res) => {
-							this.getAllProduct();
-						});
+						axios
+							.put(`${url}/api/${path}/admin/product/${currentProduct.id}`, { data: currentProduct })
+							.then((res) => {
+								this.getAllProduct();
+							})
+							.catch((err) => alert("更新失敗"));
 					},
 					deleteProduct(id) {
 						if (confirm(`確認刪除${this.products[id].title}`)) {
 							document.querySelector("#loading").style.display = "block";
-							axios.delete(`${url}/api/${path}/admin/product/${id}`).then((res) => {
-								this.getAllProduct();
-							});
+							axios
+								.delete(`${url}/api/${path}/admin/product/${id}`)
+								.then((res) => {
+									this.getAllProduct();
+								})
+								.catch((err) => alert("刪除失敗"));
 						}
 					}
 				},
