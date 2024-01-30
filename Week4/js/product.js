@@ -54,7 +54,10 @@ const app = createApp({
 				.then((res) => {
 					this.goPage(this.pagination.current_page);
 				})
-				.catch((err) => alert("新增失敗"));
+				.catch((err) => {
+					document.querySelector("#loading").style.display = "none";
+					alert("新增失敗");
+				});
 		},
 		editProduct() {
 			document.querySelector("#loading").style.display = "block";
@@ -65,7 +68,10 @@ const app = createApp({
 				.then((res) => {
 					this.goPage(this.pagination.current_page);
 				})
-				.catch((err) => alert("更新失敗"));
+				.catch((err) => {
+					document.querySelector("#loading").style.display = "none";
+					alert("更新失敗");
+				});
 		},
 		deleteProduct(product) {
 			if (confirm(`確認刪除${product.title}`)) {
@@ -75,7 +81,10 @@ const app = createApp({
 					.then((res) => {
 						this.goPage(this.pagination.current_page);
 					})
-					.catch((err) => alert("刪除失敗"));
+					.catch((err) => {
+						document.querySelector("#loading").style.display = "none";
+						alert("刪除失敗");
+					});
 			}
 		}
 	},
