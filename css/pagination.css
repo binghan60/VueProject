@@ -1,0 +1,30 @@
+.page {
+	margin: 0 auto;
+	margin-top: 30px;
+	display: table;
+}
+.page ul li {
+	width: 28px;
+	border-radius: 5px;
+	float: left;
+	font-weight: bold;
+	font-size: 15px;
+	text-align: center;
+	height: 28px;
+	line-height: 28px;
+	color: #274e82;
+}
+.page ul li a {
+	text-decoration: none !important;
+}
+
+.page ul li:hover {
+	background-color: #5f8bc8;
+	color: #fff !important;
+}
+.page ul li.active {
+	background-color: #5f8bc8;
+	color: #fff !important;
+	width: 28px;
+	height: 28px;
+}

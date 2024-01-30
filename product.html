@@ -5,6 +5,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="stylesheet" href="css/reset.css" />
 		<link rel="stylesheet" href="css/products.css" />
+		<link rel="stylesheet" href="css/pagination.css" />
 		<meta name="description" content="Vue產品頁" />
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.5/axios.min.js" integrity="sha512-TjBzDQIDnc6pWyeM1bhMnDxtWH0QpOXMcVooglXrali/Tj7W569/wd4E8EDjk1CwOAOPSJon1VfcEt1BI4xIrA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 		<title>產品列表</title>
@@ -38,11 +39,12 @@
 									<td style="text-align: center">{{ product.origin_price }}</td>
 									<td style="text-align: center">{{ product.price }}</td>
 									<td style="text-align: center"><span v-if="product.is_enabled == 1" style="color: rgb(13, 228, 13); font-weight: 900">是</span><span v-else style="color: rgb(235, 0, 0); font-weight: 900">否</span></td>
-									<td style="text-align: center"><button type="button" class="edit" @click="openModal(product.id,'edit')">編輯</button><button type="button" class="delete" @click="deleteProduct(product.id)">刪除</button></td>
+									<td style="text-align: center"><button type="button" class="edit" @click="openModal(product,'edit')">編輯</button><button type="button" class="delete" @click="deleteProduct(product)">刪除</button></td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
+					<Pagination v-on:go-page="goPage" :pagination="pagination"></Pagination>
 				</div>
 
 				<div class="modal" :style="{ display:showModal ? 'flex' : '' }">
@@ -115,93 +117,7 @@
 				<div class="loader"></div>
 			</div>
 		</div>
-		<script type="module">
-			const url = "https://ec-course-api.hexschool.io/v2";
-			const path = "binghank";
-			import { createApp } from "https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.3/vue.esm-browser.min.js";
-			createApp({
-				data() {
-					return {
-						products: [],
-						currentProduct: {},
-						showModal: false,
-						modalStatus: ""
-					};
-				},
-				methods: {
-					getAllProduct() {
-						axios
-							.post(`${url}/api/user/check`, null)
-							.then((res) => {
-								return axios(`${url}/api/${path}/admin/products/all`);
-							})
-							.then((response) => {
-								const { products } = response.data;
-								this.products = products;
-								this.showModal = false;
-								document.querySelector("#loading").style.display = "none";
-							})
-							.catch((err) => {
-								const { success } = err.response.data;
-								if (!success) {
-									alert("請先登入");
-									document.querySelector("#loading").style.display = "none";
-									location.href = "index.html";
-								}
-							});
-					},
-					openModal(id = "", type) {
-						if (type == "create") {
-							this.currentProduct = {};
-							this.modalStatus = "create";
-						} else if ((type = "edit")) {
-							this.currentProduct = { ...this.products[id] };
-							this.modalStatus = "edit";
-						}
-						this.showModal = true;
-					},
-					createProduct() {
-						document.querySelector("#loading").style.display = "block";
-						const { currentProduct } = this;
-						axios
-							.post(`${url}/api/${path}/admin/product`, { data: currentProduct })
-							.then((res) => {
-								this.getAllProduct();
-							})
-							.catch((err) => alert("新增失敗"));
-					},
-					editProduct() {
-						document.querySelector("#loading").style.display = "block";
-						const { currentProduct } = this;
-						axios
-							.put(`${url}/api/${path}/admin/product/${currentProduct.id}`, { data: currentProduct })
-							.then((res) => {
-								this.getAllProduct();
-							})
-							.catch((err) => alert("更新失敗"));
-					},
-					deleteProduct(id) {
-						if (confirm(`確認刪除${this.products[id].title}`)) {
-							document.querySelector("#loading").style.display = "block";
-							axios
-								.delete(`${url}/api/${path}/admin/product/${id}`)
-								.then((res) => {
-									this.getAllProduct();
-								})
-								.catch((err) => alert("刪除失敗"));
-						}
-					}
-				},
-				mounted() {
-					const token = document.cookie.replace(/(?:(?:^|.*;\s*)hexVueToken\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-					axios.defaults.headers.common.Authorization = token;
-					if (!token) {
-						alert("請先登入");
-						location.href = "index.html";
-					}
-					this.getAllProduct();
-				}
-			}).mount("#app");
-		</script>
+
+		<script src="./js/product.js" type="module"></script>
 	</body>
 </html>
