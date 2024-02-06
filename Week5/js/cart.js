@@ -2,7 +2,7 @@ import userProductModal from "../components/userProductModal.js";
 Object.keys(VeeValidateRules).forEach((rule) => {
 	VeeValidate.defineRule(rule, VeeValidateRules[rule]);
 });
-VeeValidateI18n.loadLocaleFromURL("../zh_TW.json");
+VeeValidateI18n.loadLocaleFromURL("./zh_TW.json");
 VeeValidate.configure({
 	generateMessage: VeeValidateI18n.localize("zh_TW"),
 	validateOnInput: true
