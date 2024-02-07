@@ -71,6 +71,7 @@ const app = Vue.createApp({
 				})
 				.then((res) => {
 					this.isLoading = false;
+					this.$refs.modal.hideModal();
 					this.getCart();
 				})
 				.catch((error) => {
@@ -107,7 +108,6 @@ const app = Vue.createApp({
 				});
 		},
 		removeAllProduct() {
-			this.$refs.modal.openModal();
 			if (this.cart.carts.length == 0) {
 				return;
 			}
